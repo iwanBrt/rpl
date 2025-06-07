@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Manajemen Proyek Mini dengan AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* gray-900, lebih gelap untuk kontras */
+            color: #d1d5db; /* gray-300 */
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #581c87 0%, #2563eb 100%); /* Ungu tua ke Biru */
+        }
+        .section-gradient {
+             background: linear-gradient(180deg, #1f2937 0%, #111827 100%); /* gray-800 ke gray-900 */
+        }
+        .navbar-glass {
+            background-color: rgba(55, 65, 81, 0.6); /* gray-700 dengan transparansi */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(75, 85, 99, 0.5); /* gray-600 dengan transparansi */
+        }
+        .feature-card {
+            background-color: #1f2937; /* gray-800 */
+            border: 1px solid #4b5563; /* gray-600 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.2); /* Bayangan ungu */
+        }
+        .btn-primary {
+            background-color: #7c3aed; /* purple-600 */
+            /* transisi sudah ditambahkan via class Tailwind */
+        }
+        .btn-primary:hover {
+            background-color: #6d28d9; /* purple-700 */
+        }
+        .btn-secondary {
+            background-color: #14b8a6; /* teal-500 */
+            /* transisi sudah ditambahkan via class Tailwind, tidak perlu 'transition: background-color 0.3s ease;' di sini */
+        }
+        .btn-secondary:hover {
+            background-color: #0d9488; /* teal-600 */
+        }
+        /* Animasi sederhana untuk fade-in */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-section {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        .team-member-card {
+            background-color: #1f2937; /* gray-800 */
+            border: 1px solid #4b5563; /* gray-600 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .team-member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(139, 92, 246, 0.15); /* Bayangan ungu lebih lembut */
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav id="navbar" class="navbar-glass fixed w-full z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center">
+                    <a href="#beranda" class="flex-shrink-0 text-white text-3xl font-extrabold tracking-tight">
+                        Proyek<span class="text-purple-400">Mini</span> AI
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#beranda" class="text-gray-300 hover:bg-purple-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Beranda</a>
+                        <a href="#tentang" class="text-gray-300 hover:bg-purple-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Tentang Aplikasi</a>
+                        <a href="#about-us" class="text-gray-300 hover:bg-purple-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Tentang Kami</a>
+                        <a href="#kontak" class="text-gray-300 hover:bg-purple-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Kontak</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Buka menu utama</span>
+                        <i class="fas fa-bars fa-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#beranda" class="text-gray-300 hover:bg-purple-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Beranda</a>
+                <a href="#tentang" class="text-gray-300 hover:bg-purple-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Tentang Aplikasi</a>
+                <a href="#about-us" class="text-gray-300 hover:bg-purple-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Tentang Kami</a>
+                <a href="#kontak" class="text-gray-300 hover:bg-purple-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Kontak</a>
+            </div>
+        </div>
+    </nav>
+
+    <section id="beranda" class="hero-gradient pt-20 min-h-screen flex items-center justify-center text-white">
+        <div class="text-center px-4 py-16 md:py-24 max-w-4xl mx-auto fade-in-section">
+            <img src="./assets/images/AI.png" alt="[Ikon AI Proyek]" class="mx-auto mb-8 rounded-full shadow-2xl w-32 h-32 md:w-40 md:h-40 border-4 border-purple-400">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
+                Revolusi Manajemen Proyek Anda dengan <span class="block text-purple-300">Kecerdasan Buatan</span>
+            </h1>
+            <p class="text-lg sm:text-xl text-purple-100 mb-10 max-w-2xl mx-auto">
+                Sistem Manajemen Proyek Mini kami, ditenagai oleh AI Gemini, membantu Anda merencanakan, melacak, dan menyelesaikan proyek dengan lebih cerdas dan efisien.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                <a href="#tentang" class="btn-primary text-white font-semibold py-3 px-8 rounded-lg text-lg shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out">
+                    Pelajari Lebih Lanjut <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+                <a href="./auth.php" class="btn-secondary text-white font-semibold py-3 px-8 rounded-lg text-lg shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out">
+                    Coba Aplikasi <i class="fas fa-rocket ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="tentang" class="py-16 md:py-24 section-gradient">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 fade-in-section">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-purple-400 mb-4">Tentang Sistem Manajemen Proyek Mini</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                    Aplikasi inovatif ini dirancang untuk menyederhanakan alur kerja manajemen proyek Anda. Dengan integrasi AI Gemini, Anda dapat:
+                </p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="feature-card p-6 rounded-lg shadow-xl text-center">
+                    <div class="text-purple-400 mb-4">
+                        <i class="fas fa-brain fa-3x"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-purple-300 mb-2">Perencanaan Cerdas dengan AI</h3>
+                    <p class="text-gray-400 text-sm">
+                        Biarkan AI chatbot kami membantu Anda membuat daftar tugas proyek secara otomatis berdasarkan deskripsi proyek Anda. Hemat waktu dan fokus pada eksekusi.
+                    </p>
+                </div>
+                <div class="feature-card p-6 rounded-lg shadow-xl text-center">
+                    <div class="text-purple-400 mb-4">
+                        <i class="fas fa-tasks fa-3x"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-purple-300 mb-2">Manajemen Tugas Intuitif</h3>
+                    <p class="text-gray-400 text-sm">
+                        Tambahkan, edit, dan kelola tugas dengan mudah. Pantau deadline dengan status visual yang jelas (Menunggu, Segera Selesaikan, Selesai, Terlambat).
+                    </p>
+                </div>
+                <div class="feature-card p-6 rounded-lg shadow-xl text-center">
+                    <div class="text-purple-400 mb-4">
+                        <i class="fas fa-lightbulb fa-3x"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-purple-300 mb-2">Saran Sub-Tugas Otomatis</h3>
+                    <p class="text-gray-400 text-sm">
+                        AI dapat menyarankan sub-tugas yang relevan untuk tugas utama Anda, membantu memecah pekerjaan kompleks menjadi langkah-langkah yang lebih mudah dikelola.
+                    </p>
+                </div>
+                <div class="feature-card p-6 rounded-lg shadow-xl text-center">
+                     <div class="text-purple-400 mb-4">
+                        <i class="fas fa-edit fa-3x"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-purple-300 mb-2">Fleksibel dan Dapat Disesuaikan</h3>
+                    <p class="text-gray-400 text-sm">
+                        Meskipun AI memberikan saran, Anda tetap memegang kendali penuh. Edit, tambah, atau hapus tugas sesuai kebutuhan spesifik proyek Anda.
+                    </p>
+                </div>
+                 <div class="feature-card p-6 rounded-lg shadow-xl text-center">
+                     <div class="text-purple-400 mb-4">
+                        <i class="fas fa-mobile-alt fa-3x"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-purple-300 mb-2">Desain Responsif</h3>
+                    <p class="text-gray-400 text-sm">
+                        Akses dan kelola proyek Anda kapan saja, di mana saja, melalui berbagai perangkat berkat desain yang sepenuhnya responsif.
+                    </p>
+                </div>
+                 <div class="feature-card p-6 rounded-lg shadow-xl text-center">
+                     <div class="text-purple-400 mb-4">
+                        <i class="fas fa-palette fa-3x"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-purple-300 mb-2">Antarmuka Menarik</h3>
+                    <p class="text-gray-400 text-sm">
+                        Nikmati pengalaman pengguna yang menyenangkan dengan antarmuka yang modern, bersih, dan visual yang menarik.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about-us" class="py-16 md:py-24 bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center fade-in-section">
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-purple-400 mb-12">Tentang Tim Kami</h2>
+            <p class="text-lg text-gray-400 max-w-3xl mx-auto mb-12">
+                Kami adalah tim beranggotakan empat individu yang bersemangat dalam teknologi dan pengembangan perangkat lunak. Proyek ini merupakan hasil kolaborasi kami untuk menghadirkan solusi manajemen proyek yang inovatif dan mudah digunakan.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="team-member-card p-6 rounded-lg text-center">
+                    <img src="./assets/images/me.jpg" alt="[Foto Anggota Tim 1]" class="w-28 h-28 rounded-full mx-auto mb-4 border-2 border-purple-500 shadow-md">
+                    <h3 class="text-xl font-semibold text-purple-300 mb-1">Iwan A Berutu</h3>
+                    <p class="text-sm text-gray-400 mb-2">Peran Anggota 1 (mis: Project Lead)</p>
+                    <div class="flex justify-center space-x-3">
+                        <a href="#" target="_blank" class="text-gray-500 hover:text-purple-400 transition-colors"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" target="_blank" class="text-gray-500 hover:text-purple-400 transition-colors"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="team-member-card p-6 rounded-lg text-center">
+                    <img src="./assets/images/me.jpg" alt="[Foto Anggota Tim 2]" class="w-28 h-28 rounded-full mx-auto mb-4 border-2 border-purple-500 shadow-md">
+                    <h3 class="text-xl font-semibold text-purple-300 mb-1">Dean</h3>
+                    <p class="text-sm text-gray-400 mb-2">Peran Anggota 2 (mis: Lead Developer)</p>
+                    <div class="flex justify-center space-x-3">
+                        <a href="#" target="_blank" class="text-gray-500 hover:text-purple-400 transition-colors"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" target="_blank" class="text-gray-500 hover:text-purple-400 transition-colors"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="team-member-card p-6 rounded-lg text-center">
+                    <img src="./assets/images/me.jpg" alt="[Foto Anggota Tim 3]" class="w-28 h-28 rounded-full mx-auto mb-4 border-2 border-purple-500 shadow-md">
+                    <h3 class="text-xl font-semibold text-purple-300 mb-1">Aldo</h3>
+                    <p class="text-sm text-gray-400 mb-2">Peran Anggota 3 (mis: UI/UX Designer)</p>
+                    <div class="flex justify-center space-x-3">
+                        <a href="#" target="_blank" class="text-gray-500 hover:text-purple-400 transition-colors"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" target="_blank" class="text-gray-500 hover:text-purple-400 transition-colors"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="team-member-card p-6 rounded-lg text-center">
+                    <img src="./assets/images/me.jpg" alt="[Foto Anggota Tim 4]" class="w-28 h-28 rounded-full mx-auto mb-4 border-2 border-purple-500 shadow-md">
+                    <h3 class="text-xl font-semibold text-purple-300 mb-1">Khildan</h3>
+                    <p class="text-sm text-gray-400 mb-2">Peran Anggota 4 (mis: AI Specialist)</p>
+                    <div class="flex justify-center space-x-3">
+                        <a href="#" target="_blank" class="text-gray-500 hover:text-purple-400 transition-colors"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" target="_blank" class="text-gray-500 hover:text-purple-400 transition-colors"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+             <p class="text-gray-400 max-w-2xl mx-auto mt-12">
+                Bersama-sama, kami menggabungkan keahlian kami untuk menciptakan solusi inovatif menggunakan teknologi terbaru. Proyek ini adalah salah satu eksplorasi kami dalam memanfaatkan kecerdasan buatan untuk meningkatkan produktivitas.
+            </p>
+        </div>
+    </section>
+
+    <section id="kontak" class="py-16 md:py-24 section-gradient">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center fade-in-section">
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-purple-400 mb-4">Hubungi Kami</h2>
+            <p class="text-lg text-gray-400 mb-8">
+                Punya pertanyaan, saran, atau ingin berkolaborasi? Jangan ragu untuk menghubungi tim kami!
+            </p>
+            <form action="#" method="POST" class="space-y-6">
+                <div>
+                    <label for="name" class="sr-only">Nama</label>
+                    <input type="text" name="name" id="name" autocomplete="name" required class="block w-full bg-gray-700 border-gray-600 text-gray-200 shadow-sm py-3 px-4 placeholder-gray-500 focus:ring-purple-500 focus:border-purple-500 border rounded-md" placeholder="Nama Lengkap Anda">
+                </div>
+                <div>
+                    <label for="email" class="sr-only">Email</label>
+                    <input type="email" name="email" id="email" autocomplete="email" required class="block w-full bg-gray-700 border-gray-600 text-gray-200 shadow-sm py-3 px-4 placeholder-gray-500 focus:ring-purple-500 focus:border-purple-500 border rounded-md" placeholder="Alamat Email Anda">
+                </div>
+                <div>
+                    <label for="message" class="sr-only">Pesan</label>
+                    <textarea id="message" name="message" rows="4" required class="block w-full bg-gray-700 border-gray-600 text-gray-200 shadow-sm py-3 px-4 placeholder-gray-500 focus:ring-purple-500 focus:border-purple-500 border rounded-md" placeholder="Pesan Anda"></textarea>
+                </div>
+                <div>
+                    <button type="submit" class="w-full btn-primary text-white font-semibold py-3 px-6 rounded-md shadow-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-purple-500">
+                        Kirim Pesan <i class="fas fa-paper-plane ml-2"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 border-t border-gray-700">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-400 text-sm">
+                &copy; <span id="currentYear"></span> Sistem Manajemen Proyek Mini dengan AI. Dibuat oleh Tim kelompok 3.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Script untuk mobile menu
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true' || false;
+            mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
+            if (!isExpanded) {
+                mobileMenuButton.innerHTML = '<i class="fas fa-times fa-lg"></i>';
+            } else {
+                mobileMenuButton.innerHTML = '<i class="fas fa-bars fa-lg"></i>';
+            }
+        });
+
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenuButton.setAttribute('aria-expanded', 'false');
+                mobileMenuButton.innerHTML = '<i class="fas fa-bars fa-lg"></i>';
+            });
+        });
+        
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        const navbar = document.getElementById('navbar');
+        window.onscroll = function() {
+            if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+                navbar.classList.remove('navbar-glass');
+                navbar.classList.add('bg-purple-700', 'shadow-lg');
+            } else {
+                navbar.classList.add('navbar-glass');
+                navbar.classList.remove('bg-purple-700', 'shadow-lg');
+            }
+        };
+
+        const sections = document.querySelectorAll('.fade-in-section');
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1 
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            section.style.animationPlayState = 'paused'; 
+            observer.observe(section);
+        });
+
+    </script>
+</body>
+</html>
